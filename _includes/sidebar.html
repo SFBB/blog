@@ -22,7 +22,10 @@
       <li class="nav-item{% if page.layout == 'home' %}{{ " active" }}{% endif %}">
         <a href="{{ '/' | relative_url }}" class="nav-link">
           <i class="fa-fw fas fa-home"></i>
-          <span>{{ site.data.locales[include.lang].tabs.home | upcase }}</span>
+          <span>
+            <span class="lang-view" data-lang="en">{{ site.data.locales['en'].tabs.home | upcase }}</span>
+            <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].tabs.home }}</span>
+          </span>
         </a>
       </li>
       <!-- the real tabs -->
@@ -32,7 +35,10 @@
             <i class="fa-fw {{ tab.icon }}"></i>
             {% capture tab_name %}{{ tab.url | split: '/' }}{% endcapture %}
 
-            <span>{{ site.data.locales[include.lang].tabs.[tab_name] | default: tab.title | upcase }}</span>
+            <span>
+              <span class="lang-view" data-lang="en">{{ site.data.locales['en'].tabs.[tab_name] | default: tab.title | upcase }}</span>
+              <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].tabs.[tab_name] | default: tab.title }}</span>
+            </span>
           </a>
         </li>
         <!-- .nav-item -->
@@ -70,62 +76,38 @@
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="light">
               {{- icon_light -}}
-              {{- site.data.locales[lang].theme.light -}}
+              <span class="lang-view ms-2" data-lang="en">{{- site.data.locales['en'].theme.light -}}</span>
+              <span class="lang-view ms-2" data-lang="zh">{{- site.data.locales['zh-CN'].theme.light -}}</span>
             </button>
           </li>
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="dark">
               {{- icon_dark -}}
-              {{- site.data.locales[lang].theme.dark -}}
+              <span class="lang-view ms-2" data-lang="en">{{- site.data.locales['en'].theme.dark -}}</span>
+              <span class="lang-view ms-2" data-lang="zh">{{- site.data.locales['zh-CN'].theme.dark -}}</span>
             </button>
           </li>
           <li>
             <button class="dropdown-item d-flex align-items-center" type="button" data-theme-mode="system">
               {{- icon_system -}}
-              {{- site.data.locales[lang].theme.system -}}
+              <span class="lang-view ms-2" data-lang="en">{{- site.data.locales['en'].theme.system -}}</span>
+              <span class="lang-view ms-2" data-lang="zh">{{- site.data.locales['zh-CN'].theme.system -}}</span>
             </button>
           </li>
         </ul>
       </div>
 
-      {% if lang == 'zh-CN' or lang == 'zh' %}
-        {% assign target_lang_code = 'EN' %}
-        {% assign target_lang_title = 'Switch to English' %}
-        {% if page.ref %}
-          {% assign peer_post = site.posts | where: 'ref', page.ref | where: 'lang', 'en' | first %}
-          {% if peer_post %}
-            {% assign lang_switch_url = peer_post.url | relative_url %}
-          {% else %}
-            {% assign lang_switch_url = '/' | relative_url %}
-          {% endif %}
-        {% else %}
-          {% assign lang_switch_url = '/' | relative_url %}
-        {% endif %}
-      {% else %}
-        {% assign target_lang_code = '中' %}
-        {% assign target_lang_title = '切换至中文' %}
-        {% if page.ref %}
-          {% assign peer_post = site.posts | where: 'ref', page.ref | where: 'lang', 'zh-CN' | first %}
-          {% if peer_post %}
-            {% assign lang_switch_url = peer_post.url | relative_url %}
-          {% else %}
-            {% assign lang_switch_url = '/zh/' | relative_url %}
-          {% endif %}
-        {% else %}
-          {% assign lang_switch_url = '/zh/' | relative_url %}
-        {% endif %}
-      {% endif %}
-
-      <a
-        href="{{ lang_switch_url }}"
+      <button
+        type="button"
         class="btn btn-link nav-link"
         aria-label="Switch Language"
         id="lang-toggle"
-        title="{{ target_lang_title }}"
+        title="Switch Language / 切换语言"
       >
         <i class="fas fa-globe"></i>
-        <span class="ms-1 small" style="font-size: 0.8rem; font-weight: 600;">{{ target_lang_code }}</span>
-      </a>
+        <span class="lang-view ms-1 small" data-lang="en" style="font-size: 0.8rem; font-weight: 600;">中</span>
+        <span class="lang-view ms-1 small" data-lang="zh" style="font-size: 0.8rem; font-weight: 600;">EN</span>
+      </button>
 
       {% if site.data.contact.size > 0 %}
         <span class="icon-border"></span>

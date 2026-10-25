@@ -1,0 +1,22 @@
+---
+layout: default
+---
+
+{% include lang.html %}
+
+<article class="px-1">
+  {% if page.layout == 'page' or page.collection == 'tabs' %}
+    {% assign tab_key = page.title | downcase %}
+    {% assign title_en = site.data.locales['en'].tabs[tab_key] | default: page.title %}
+    {% assign title_zh = site.data.locales['zh-CN'].tabs[tab_key] | default: page.title_zh | default: page.title %}
+    <h1 class="dynamic-title">
+      <span class="lang-view" data-lang="en">{{ title_en }}</span>
+      <span class="lang-view" data-lang="zh">{{ title_zh }}</span>
+    </h1>
+    <div class="content">
+      {{ content }}
+    </div>
+  {% else %}
+    {{ content }}
+  {% endif %}
+</article>

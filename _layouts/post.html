@@ -15,22 +15,34 @@ script_includes:
 
 <article class="px-1" data-toc="{{ enable_toc }}">
   <header>
-    <h1 data-toc-skip>{{ page.title }}</h1>
-    {% if page.description %}
-      <p class="post-desc fw-light mb-4">{{ page.description }}</p>
+    <h1 data-toc-skip>
+      <span class="lang-view" data-lang="en">{{ page.title }}</span>
+      <span class="lang-view" data-lang="zh">{{ page.title_zh | default: page.title }}</span>
+    </h1>
+    {% if page.description or page.description_zh %}
+      <p class="post-desc fw-light mb-4">
+        {% if page.description %}
+          <span class="lang-view" data-lang="en">{{ page.description }}</span>
+        {% endif %}
+        {% if page.description_zh or page.description %}
+          <span class="lang-view" data-lang="zh">{{ page.description_zh | default: page.description }}</span>
+        {% endif %}
+      </p>
     {% endif %}
 
     <div class="post-meta text-muted">
       <!-- published date -->
       <span>
-        {{ site.data.locales[lang].post.posted }}
+        <span class="lang-view" data-lang="en">{{ site.data.locales['en'].post.posted }}</span>
+        <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].post.posted }}</span>
         {% include datetime.html date=page.date tooltip=true lang=lang %}
       </span>
 
       <!-- lastmod date -->
       {% if page.last_modified_at and page.last_modified_at != page.date %}
         <span>
-          {{ site.data.locales[lang].post.updated }}
+          <span class="lang-view" data-lang="en">{{ site.data.locales['en'].post.updated }}</span>
+          <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].post.updated }}</span>
           {% include datetime.html date=page.last_modified_at tooltip=true lang=lang %}
         </span>
       {% endif %}
@@ -61,7 +73,8 @@ script_includes:
             {% assign authors = page.authors %}
           {% endif %}
 
-          {{ site.data.locales[lang].post.written_by }}
+          <span class="lang-view" data-lang="en">{{ site.data.locales['en'].post.written_by }}</span>
+          <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].post.written_by }}</span>
 
           <em>
             {% if authors %}
@@ -99,20 +112,29 @@ script_includes:
 
   {% if enable_toc %}
     <div id="toc-bar" class="d-flex align-items-center justify-content-between invisible">
-      <span class="label text-truncate">{{ page.title }}</span>
+      <span class="label text-truncate">
+        <span class="lang-view" data-lang="en">{{ page.title }}</span>
+        <span class="lang-view" data-lang="zh">{{ page.title_zh | default: page.title }}</span>
+      </span>
       <button type="button" class="toc-trigger btn me-1">
         <i class="fa-solid fa-list-ul fa-fw"></i>
       </button>
     </div>
 
     <button id="toc-solo-trigger" type="button" class="toc-trigger btn btn-outline-secondary btn-sm">
-      <span class="label ps-2 pe-1">{{- site.data.locales[lang].panel.toc -}}</span>
+      <span class="label ps-2 pe-1">
+        <span class="lang-view" data-lang="en">{{ site.data.locales['en'].panel.toc }}</span>
+        <span class="lang-view" data-lang="zh">{{ site.data.locales['zh-CN'].panel.toc }}</span>
+      </span>
       <i class="fa-solid fa-angle-right fa-fw"></i>
     </button>
 
     <dialog id="toc-popup" class="p-0">
       <div class="header d-flex flex-row align-items-center justify-content-between">
-        <div class="label text-truncate py-2 ms-4">{{- page.title -}}</div>
+        <div class="label text-truncate py-2 ms-4">
+          <span class="lang-view" data-lang="en">{{ page.title }}</span>
+          <span class="lang-view" data-lang="zh">{{ page.title_zh | default: page.title }}</span>
+        </div>
         <button id="toc-popup-close" type="button" class="btn-close btn-sm mx-3" aria-label="Close"></button>
       </div>
       <div id="toc-popup-content" class="px-4 py-3 pb-4"></div>
@@ -163,15 +185,22 @@ script_includes:
       "
     >
       <div class="license-wrapper">
-        {% if site.data.locales[lang].copyright.license.template %}
-          {% capture _replacement %}
-        <a href="{{ site.data.locales[lang].copyright.license.link }}">
-          {{ site.data.locales[lang].copyright.license.name }}
-        </a>
-        {% endcapture %}
-
-          {{ site.data.locales[lang].copyright.license.template | replace: ':LICENSE_NAME', _replacement }}
-        {% endif %}
+        <span class="lang-view" data-lang="en">
+          {% capture _replacement_en %}
+            <a href="{{ site.data.locales['en'].copyright.license.link }}">
+              {{ site.data.locales['en'].copyright.license.name }}
+            </a>
+          {% endcapture %}
+          {{ site.data.locales['en'].copyright.license.template | replace: ':LICENSE_NAME', _replacement_en }}
+        </span>
+        <span class="lang-view" data-lang="zh">
+          {% capture _replacement_zh %}
+            <a href="{{ site.data.locales['zh-CN'].copyright.license.link }}">
+              {{ site.data.locales['zh-CN'].copyright.license.name }}
+            </a>
+          {% endcapture %}
+          {{ site.data.locales['zh-CN'].copyright.license.template | replace: ':LICENSE_NAME', _replacement_zh }}
+        </span>
       </div>
 
       {% include post-sharing.html lang=lang %}

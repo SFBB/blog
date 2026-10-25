@@ -1,43 +1,78 @@
-<!-- Automatic Browser Language Detection & Manual Preference Persistence -->
+<!-- Synchronous Language Mode Setup (Prevents FOUC) -->
 <script>
   (function () {
     const STORAGE_KEY = 'pref-lang';
-    const zhHome = '{{ "/zh/" | relative_url }}';
-    const enHome = '{{ "/" | relative_url }}';
-
-    function normalizePath(p) {
-      if (!p) return '/';
-      return p.replace(/\/index\.html$/, '').replace(/\/$/, '') || '/';
-    }
-
-    // 1. Get saved preference or detect from browser
     let pref = localStorage.getItem(STORAGE_KEY);
     if (!pref) {
       const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
       pref = browserLang.startsWith('zh') ? 'zh' : 'en';
     }
+    document.documentElement.setAttribute('data-site-lang', pref);
+  })();
+</script>
 
-    // 2. Auto-redirect on the home entrance if needed
-    const currentNorm = normalizePath(window.location.pathname);
-    const isEnHome = currentNorm === normalizePath(enHome);
-    const isZhHome = currentNorm === normalizePath(zhHome);
+<style>
+  /* English / Default State */
+  html:not([data-site-lang="zh"]) .lang-view[data-lang="zh"] {
+    display: none !important;
+  }
+  html:not([data-site-lang="zh"]) span.lang-view[data-lang="en"] {
+    display: inline !important;
+  }
+  html:not([data-site-lang="zh"]) div.lang-view[data-lang="en"],
+  html:not([data-site-lang="zh"]) p.lang-view[data-lang="en"] {
+    display: block !important;
+  }
 
-    if (isEnHome && pref === 'zh') {
-      window.location.replace(zhHome);
-    } else if (isZhHome && pref === 'en') {
-      window.location.replace(enHome);
+  /* Chinese State */
+  html[data-site-lang="zh"] .lang-view[data-lang="en"] {
+    display: none !important;
+  }
+  html[data-site-lang="zh"] span.lang-view[data-lang="zh"] {
+    display: inline !important;
+  }
+  html[data-site-lang="zh"] div.lang-view[data-lang="zh"],
+  html[data-site-lang="zh"] p.lang-view[data-lang="zh"] {
+    display: block !important;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const STORAGE_KEY = 'pref-lang';
+
+    // 1. Fallback for posts that only contain English content
+    const zhViews = document.querySelectorAll('.content .lang-view[data-lang="zh"]');
+    if (zhViews.length === 0) {
+      const enViews = document.querySelectorAll('.content .lang-view[data-lang="en"]');
+      enViews.forEach(function (el) {
+        el.classList.remove('lang-view');
+      });
     }
 
-    // 3. Listen for manual language toggle clicks to record explicit user preference
-    document.addEventListener('DOMContentLoaded', function () {
-      const toggleBtn = document.getElementById('lang-toggle');
-      if (toggleBtn) {
-        toggleBtn.addEventListener('click', function () {
-          const currentLang = '{{ lang }}';
-          const nextLang = (currentLang === 'zh-CN' || currentLang === 'zh') ? 'en' : 'zh';
-          localStorage.setItem(STORAGE_KEY, nextLang);
-        });
+    function syncUI(lang) {
+      document.documentElement.setAttribute('data-site-lang', lang);
+
+      // Search input placeholder
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.placeholder = (lang === 'zh') ? '搜索...' : 'Search...';
       }
-    });
-  })();
+    }
+
+    const currentLang = document.documentElement.getAttribute('data-site-lang') || 'en';
+    syncUI(currentLang);
+
+    // 2. Language Switcher Button Listener
+    const toggleBtn = document.getElementById('lang-toggle');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        const cur = document.documentElement.getAttribute('data-site-lang') || 'en';
+        const next = (cur === 'zh') ? 'en' : 'zh';
+        localStorage.setItem(STORAGE_KEY, next);
+        syncUI(next);
+      });
+    }
+  });
 </script>

@@ -1,26 +1,33 @@
-{% if page.llm %}
-  {% assign is_zh = false %}
-  {% if page.lang == 'zh' or page.lang == 'zh-CN' or page.lang == 'zh-TW' %}
-    {% assign is_zh = true %}
-  {% endif %}
-
-  <blockquote class="prompt-info">
-    <p>
-      {% if is_zh %}
+<!-- LLM Banner for Chinese View -->
+{% assign zh_llm = page.llm.zh | default: page.llm %}
+{% if zh_llm and zh_llm != false and zh_llm != 'false' %}
+  <div class="lang-view" data-lang="zh">
+    <blockquote class="prompt-info">
+      <p>
         <strong>🤖 AI 辅助声明：</strong>
-        {% if page.llm == true %}
+        {% if zh_llm == true %}
           本文内容由大语言模型（LLM）辅助翻译或整理生成，仅供参考。
         {% else %}
-          本文内容由 <strong>{{ page.llm }}</strong> 辅助翻译或整理生成，仅供参考。
+          本文内容由 <strong>{{ zh_llm }}</strong> 辅助翻译或整理生成，仅供参考。
         {% endif %}
-      {% else %}
+      </p>
+    </blockquote>
+  </div>
+{% endif %}
+
+<!-- LLM Banner for English View -->
+{% assign en_llm = page.llm.en %}
+{% if en_llm and en_llm != false and en_llm != 'false' %}
+  <div class="lang-view" data-lang="en">
+    <blockquote class="prompt-info">
+      <p>
         <strong>🤖 AI Notice:</strong>
-        {% if page.llm == true %}
+        {% if en_llm == true %}
           This article was translated or drafted with the assistance of a Large Language Model (LLM).
         {% else %}
-          This article was translated or drafted with the assistance of <strong>{{ page.llm }}</strong>.
+          This article was translated or drafted with the assistance of <strong>{{ en_llm }}</strong>.
         {% endif %}
-      {% endif %}
-    </p>
-  </blockquote>
+      </p>
+    </blockquote>
+  </div>
 {% endif %}
