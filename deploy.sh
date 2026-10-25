@@ -53,7 +53,7 @@ rm -rf _site
 
 # Build the site
 echo "🔨 Building Jekyll site..."
-JEKYLL_ENV=production bundle exec jekyll build -d _site -b "$BASE_URL"
+JEKYLL_ENV=production bundle exec jekyll build --future -d _site -b "$BASE_URL"
 
 # Create .nojekyll to ensure GitHub Pages does not run Jekyll again
 touch _site/.nojekyll
