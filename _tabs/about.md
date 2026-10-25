@@ -31,3 +31,10 @@ It is used to record `devlogs`, `technical deep dives`, `tech trivia`, my advent
 - **GitHub**: [SFBB](https://github.com/SFBB)
 - **Email**: [SFBB email](mailto:sfbb123@proton.me)
 - **RSS Feed**: [Subscribe via RSS]({{ '/feed.xml' | relative_url }})
+
+---
+
+### License & Attribution
+
+- **Blog Content & Articles**: Licensed under [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (Free to share with attribution, non-commercial only).
+- **Source Code & Customizations**: Licensed under GPLv3, incorporating the MIT-licensed theme by Cotes Chung.
