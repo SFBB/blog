@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
-# Add possible user gem bin paths to PATH
-export PATH="$HOME/.local/share/gem/ruby/3.2.0/bin:$HOME/.local/bin:$PATH"
+# Add possible user gem bin paths to PATH and set GEM_HOME
+export GEM_HOME="$HOME/.local/share/gem/ruby/3.2.0"
+export PATH="$GEM_HOME/bin:$HOME/.local/bin:$PATH"
+
+# Ensure Bundler installs into project-local vendor/bundle to avoid /var/lib permission issues
+bundle config set --local path 'vendor/bundle' &> /dev/null || true
 
 echo "=========================================="
 echo "🚀 Starting Local Build & Deploy"
