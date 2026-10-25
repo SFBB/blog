@@ -1,0 +1,26 @@
+{% if page.llm %}
+  {% assign is_zh = false %}
+  {% if page.lang == 'zh' or page.lang == 'zh-CN' or page.lang == 'zh-TW' %}
+    {% assign is_zh = true %}
+  {% endif %}
+
+  <blockquote class="prompt-info">
+    <p>
+      {% if is_zh %}
+        <strong>🤖 AI 辅助声明：</strong>
+        {% if page.llm == true %}
+          本文内容由大语言模型（LLM）辅助翻译或整理生成，仅供参考。
+        {% else %}
+          本文内容由 <strong>{{ page.llm }}</strong> 辅助翻译或整理生成，仅供参考。
+        {% endif %}
+      {% else %}
+        <strong>🤖 AI Notice:</strong>
+        {% if page.llm == true %}
+          This article was translated or drafted with the assistance of a Large Language Model (LLM).
+        {% else %}
+          This article was translated or drafted with the assistance of <strong>{{ page.llm }}</strong>.
+        {% endif %}
+      {% endif %}
+    </p>
+  </blockquote>
+{% endif %}
