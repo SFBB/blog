@@ -1,0 +1,65 @@
+<!-- Calculate the post's reading time, and display the word count in tooltip -->
+
+{% assign content = include.content %}
+
+{% if content contains 'data-lang="zh"' %}
+  {% assign en_part = content | split: 'data-lang="zh"' | first %}
+  {% assign zh_part = content | split: 'data-lang="zh"' | last %}
+  {% assign en_words = en_part | strip_html | number_of_words: 'auto' %}
+  {% assign zh_words = zh_part | strip_html | number_of_words: 'auto' %}
+{% else %}
+  {% assign en_words = content | strip_html | number_of_words: 'auto' %}
+  {% assign zh_words = en_words %}
+{% endif %}
+
+<!-- words per minute -->
+{% assign wpm = 180 %}
+{% assign min_time = 1 %}
+
+{% assign en_read_time = en_words | divided_by: wpm %}
+{% unless en_read_time > 0 %}
+  {% assign en_read_time = min_time %}
+{% endunless %}
+
+{% assign zh_read_time = zh_words | divided_by: wpm %}
+{% unless zh_read_time > 0 %}
+  {% assign zh_read_time = min_time %}
+{% endunless %}
+
+<!-- English View -->
+<span
+  class="lang-view readtime"
+  data-lang="en"
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="{{ en_words }} {{ site.data.locales['en'].post.words }}"
+>
+  <em>
+    {{- en_read_time -}}
+    {{ ' ' }}
+    {{- site.data.locales['en'].post.read_time.unit -}}
+  </em>
+  {%- if include.prompt -%}
+    {{ ' ' }}
+    {{ site.data.locales['en'].post.read_time.prompt }}
+  {%- endif -%}
+</span>
+
+<!-- Chinese View -->
+<span
+  class="lang-view readtime"
+  data-lang="zh"
+  data-bs-toggle="tooltip"
+  data-bs-placement="bottom"
+  title="{{ zh_words }} {{ site.data.locales['zh-CN'].post.words }}"
+>
+  <em>
+    {{- zh_read_time -}}
+    {{ ' ' }}
+    {{- site.data.locales['zh-CN'].post.read_time.unit -}}
+  </em>
+  {%- if include.prompt -%}
+    {{ ' ' }}
+    {{ site.data.locales['zh-CN'].post.read_time.prompt }}
+  {%- endif -%}
+</span>

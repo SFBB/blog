@@ -1,10 +1,10 @@
 <!-- Synchronous Language Mode Setup (Prevents FOUC) -->
 <script>
   (function () {
-    const STORAGE_KEY = 'pref-lang';
-    let pref = localStorage.getItem(STORAGE_KEY);
+    var STORAGE_KEY = 'pref-lang';
+    var pref = localStorage.getItem(STORAGE_KEY);
     if (!pref) {
-      const browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+      var browserLang = (navigator.language || navigator.userLanguage || '').toLowerCase();
       pref = browserLang.startsWith('zh') ? 'zh' : 'en';
     }
     document.documentElement.setAttribute('data-site-lang', pref);
@@ -35,44 +35,66 @@
   html[data-site-lang="zh"] p.lang-view[data-lang="zh"] {
     display: block !important;
   }
+
+  /* Language Switcher Button in Sidebar Bottom */
+  #lang-toggle {
+    height: 1.75rem;
+    min-width: 1.75rem;
+    padding: 0 0.5rem !important;
+    margin-bottom: 0.35rem;
+    border-radius: 0.875rem;
+    color: var(--sidebar-btn-color) !important;
+    background-color: var(--sidebar-btn-bg);
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    text-decoration: none !important;
+    box-shadow: var(--sidebar-border-color) 0 0 0 1px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  #lang-toggle:hover {
+    background-color: var(--sidebar-hover-bg);
+    color: var(--sidebar-active-color) !important;
+  }
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const STORAGE_KEY = 'pref-lang';
-
-    // 1. Fallback for posts that only contain English content
-    const zhViews = document.querySelectorAll('.content .lang-view[data-lang="zh"]');
-    if (zhViews.length === 0) {
-      const enViews = document.querySelectorAll('.content .lang-view[data-lang="en"]');
-      enViews.forEach(function (el) {
-        el.classList.remove('lang-view');
-      });
-    }
+  (function () {
+    var STORAGE_KEY = 'pref-lang';
 
     function syncUI(lang) {
       document.documentElement.setAttribute('data-site-lang', lang);
-
-      // Search input placeholder
-      const searchInput = document.getElementById('search-input');
+      var searchInput = document.getElementById('search-input');
       if (searchInput) {
         searchInput.placeholder = (lang === 'zh') ? '搜索...' : 'Search...';
       }
     }
 
-    const currentLang = document.documentElement.getAttribute('data-site-lang') || 'en';
-    syncUI(currentLang);
+    /* Event delegation on document so clicking #lang-toggle or its children always works */
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('#lang-toggle');
+      if (!btn) return;
+      e.preventDefault();
+      var cur = document.documentElement.getAttribute('data-site-lang') || 'en';
+      var next = (cur === 'zh') ? 'en' : 'zh';
+      localStorage.setItem(STORAGE_KEY, next);
+      syncUI(next);
+    });
 
-    // 2. Language Switcher Button Listener
-    const toggleBtn = document.getElementById('lang-toggle');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', function (e) {
-        e.preventDefault();
-        const cur = document.documentElement.getAttribute('data-site-lang') || 'en';
-        const next = (cur === 'zh') ? 'en' : 'zh';
-        localStorage.setItem(STORAGE_KEY, next);
-        syncUI(next);
-      });
-    }
-  });
+    document.addEventListener('DOMContentLoaded', function () {
+      /* Fallback for posts that only contain English content */
+      var zhViews = document.querySelectorAll('.content .lang-view[data-lang="zh"]');
+      if (zhViews.length === 0) {
+        var enViews = document.querySelectorAll('.content .lang-view[data-lang="en"]');
+        enViews.forEach(function (el) {
+          el.classList.remove('lang-view');
+        });
+      }
+
+      var currentLang = document.documentElement.getAttribute('data-site-lang') || 'en';
+      syncUI(currentLang);
+    });
+  })();
 </script>
